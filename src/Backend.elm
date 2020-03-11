@@ -38,7 +38,9 @@ updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd
 updateFromFrontend sessionId clientId msg model =
     case msg of
         SayHello ->
-            ( { model | clients = Set.insert clientId model.clients }, Lamdera.sendToFrontend clientId (SetSocks model.socks) )
+            ( { model | clients = Set.insert clientId model.clients }
+            , Lamdera.sendToFrontend clientId (SetSocks model.socks)
+            )
 
         SaveSocks socks ->
             let
@@ -51,4 +53,4 @@ updateFromFrontend sessionId clientId msg model =
                 broadcastFromClientId id =
                     Lamdera.sendToFrontend id (SetSocks socks)
             in
-            ( model, List.map broadcastFromClientId otherClients |> Cmd.batch )
+            ( { model | socks = socks }, List.map broadcastFromClientId otherClients |> Cmd.batch )
