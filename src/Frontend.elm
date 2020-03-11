@@ -71,7 +71,7 @@ updateFromBackend msg model =
         NoOpToFrontend ->
             ( model, Cmd.none )
 
-        BroadcastSocks socks ->
+        SetSocks socks ->
             ( { model | socks = Just socks }, Cmd.none )
 
 
@@ -85,6 +85,6 @@ view model =
                 Html.p [] <| [ Html.text <| "Drew and Chris have worn " ++ String.fromInt (Dict.values socks |> List.sum) ++ " pairs of socks" ]
 
             Nothing ->
-                Html.text ""
+                Html.p [] []
         ]
     }

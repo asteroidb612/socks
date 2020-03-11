@@ -22,7 +22,7 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( { socks = Dict.fromList [ ( "drew", 0 ), ( "chris", 0 ) ], clients = Set.empty }
+    ( { socks = Dict.fromList [ ( "drew", 0 ), ( "chris", 0 ) ], clients = Set.empty, message = "Test" }
     , Cmd.none
     )
 
@@ -38,7 +38,7 @@ updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd
 updateFromFrontend sessionId clientId msg model =
     case msg of
         SayHello ->
-            ( { model | clients = Set.insert clientId model.clients }, Lamdera.sendToFrontend clientId (BroadcastSocks model.socks) )
+            ( { model | clients = Set.insert clientId model.clients }, Lamdera.sendToFrontend clientId (SetSocks model.socks) )
 
         SaveSocks socks ->
             let
@@ -49,6 +49,6 @@ updateFromFrontend sessionId clientId msg model =
                         |> Set.toList
 
                 broadcastFromClientId id =
-                    Lamdera.sendToFrontend id (BroadcastSocks socks)
+                    Lamdera.sendToFrontend id (SetSocks socks)
             in
             ( model, List.map broadcastFromClientId otherClients |> Cmd.batch )

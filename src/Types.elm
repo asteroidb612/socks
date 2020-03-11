@@ -21,6 +21,7 @@ type alias Socks =
 type alias BackendModel =
     { socks : Socks
     , clients : Set Lamdera.ClientId
+    , message : String
     }
 
 
@@ -42,4 +43,4 @@ type BackendMsg
 
 type ToFrontend
     = NoOpToFrontend
-    | BroadcastSocks Socks
+    | SetSocks Socks
