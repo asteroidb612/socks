@@ -2,29 +2,35 @@ module Types exposing (..)
 
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
+import Dict exposing (Dict)
+import Set exposing (Set)
 import Url exposing (Url)
 
 
 type alias FrontendModel =
     { key : Key
-    , message : String
+    , socks : Socks
     }
+
+
+type alias Socks =
+    Dict.Dict String Int
 
 
 type alias BackendModel =
-    { message : String
-    , sockCount : Int
-    }
+    { socks : Socks, clients : Set Key }
 
 
 type FrontendMsg
     = UrlClicked UrlRequest
     | UrlChanged Url
     | NoOpFrontendMsg
+    | Increment String
 
 
 type ToBackend
-    = NoOpToBackend
+    = SayHello
+    | SaveSocks Socks
 
 
 type BackendMsg
@@ -33,3 +39,4 @@ type BackendMsg
 
 type ToFrontend
     = NoOpToFrontend
+    | BroadcastSocks Socks

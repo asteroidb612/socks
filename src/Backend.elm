@@ -1,5 +1,6 @@
 module Backend exposing (..)
 
+import Dict exposing (Dict)
 import Html
 import Lamdera exposing (ClientId, SessionId)
 import Types exposing (..)
@@ -20,7 +21,7 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( { message = "Hello!" }
+    ( Dict.fromList []
     , Cmd.none
     )
 
@@ -35,5 +36,13 @@ update msg model =
 updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd BackendMsg )
 updateFromFrontend sessionId clientId msg model =
     case msg of
-        NoOpToBackend ->
-            ( model, Cmd.none )
+        SayHello ->
+            ( { model | clients = Set.insert clientId model.clients }, Cmd.none )
+
+        SaveSocks socks ->
+            let
+                otherClients =
+                    -- "/=" means "!=" not sure why
+                    Set.filter (\x -> x /= clientId) numbers
+            in
+            ( socks, Lamdera.sendToFrontend (BroadcastSocks socks) )
