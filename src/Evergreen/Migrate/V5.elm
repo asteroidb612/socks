@@ -4,7 +4,7 @@ import Dict
 import Evergreen.Type.V3 as Old
 import Lamdera.Migrations exposing (..)
 import Set
-import Types as New
+import Evergreen.Type.V5 as New
 
 
 frontendModel : Old.FrontendModel -> ModelMigration New.FrontendModel New.FrontendMsg
