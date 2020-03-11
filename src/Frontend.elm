@@ -28,7 +28,7 @@ app =
 
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
-    ( { key = key, socks = Dict.fromList [ ( "drew", 0 ), ( "chris", 0 ) ] }, Lamdera.sendToBackend SayHello )
+    ( { key = key, socks = Nothing }, Lamdera.sendToBackend SayHello )
 
 
 update : FrontendMsg -> Model -> ( Model, Cmd FrontendMsg )
@@ -53,11 +53,16 @@ update msg model =
             ( model, Cmd.none )
 
         Increment sockWearer ->
-            let
-                newSocks =
-                    Dict.update sockWearer (Maybe.map (\x -> x + 1)) model.socks
-            in
-            ( { model | socks = newSocks }, Lamdera.sendToBackend (SaveSocks newSocks) )
+            case model.socks of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just socks ->
+                    let
+                        newSocks =
+                            Dict.update sockWearer (Maybe.map (\x -> x + 1)) socks
+                    in
+                    ( { model | socks = Just newSocks }, Lamdera.sendToBackend (SaveSocks newSocks) )
 
 
 updateFromBackend : ToFrontend -> Model -> ( Model, Cmd FrontendMsg )
@@ -67,14 +72,19 @@ updateFromBackend msg model =
             ( model, Cmd.none )
 
         BroadcastSocks socks ->
-            ( { model | socks = socks }, Cmd.none )
+            ( { model | socks = Just socks }, Cmd.none )
 
 
 view model =
-    { title = ""
-    , body =
-        [ Html.button [ Html.Events.onClick (Increment "chris") ] [ Html.text "Chris wears socks" ]
-        , Html.button [ Html.Events.onClick (Increment "drew") ] [ Html.text "Drew wears socks" ]
-        , Html.p [] <| [ Html.text <| "Drew and Chris have worn " ++ String.fromInt (Dict.values model.socks |> List.sum) ++ " pairs of socks" ]
-        ]
-    }
+    case model.socks of
+        Nothing ->
+            { title = "Loading", body = [] }
+
+        Just socks ->
+            { title = ""
+            , body =
+                [ Html.button [ Html.Events.onClick (Increment "chris") ] [ Html.text "Chris wears socks" ]
+                , Html.button [ Html.Events.onClick (Increment "drew") ] [ Html.text "Drew wears socks" ]
+                , Html.p [] <| [ Html.text <| "Drew and Chris have worn " ++ String.fromInt (Dict.values socks |> List.sum) ++ " pairs of socks" ]
+                ]
+            }

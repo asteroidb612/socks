@@ -10,7 +10,7 @@ import Url exposing (Url)
 
 type alias FrontendModel =
     { key : Key
-    , socks : Socks
+    , socks : Maybe Socks
     }
 
 

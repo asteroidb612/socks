@@ -22,7 +22,7 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( { socks = Dict.fromList [], clients = Set.empty }
+    ( { socks = Dict.fromList [ ( "drew", 0 ), ( "chris", 0 ) ], clients = Set.empty }
     , Cmd.none
     )
 
