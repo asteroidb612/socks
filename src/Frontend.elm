@@ -78,7 +78,11 @@ updateFromBackend msg model =
 view model =
     { title = ""
     , body =
-        [ Html.button [ Html.Events.onClick (Increment "chris") ] [ Html.text "Chris wears socks" ]
+        [ Html.h1 [] [ Html.text "🚧 V0: Work in Progress 🚧" ]
+        , Html.text "Right now this is just a global counter (which is hard to reset! Only click if you "
+        , Html.strong [] [ Html.text "ACTUALLY WORE THE SOCKS" ]
+        , Html.text "!)"
+        , Html.button [ Html.Events.onClick (Increment "chris") ] [ Html.text "Chris wears socks" ]
         , Html.button [ Html.Events.onClick (Increment "drew") ] [ Html.text "Drew wears socks" ]
         , case model.socks of
             Just socks ->
