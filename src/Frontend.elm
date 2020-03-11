@@ -76,15 +76,15 @@ updateFromBackend msg model =
 
 
 view model =
-    case model.socks of
-        Nothing ->
-            { title = "Loading", body = [] }
+    { title = ""
+    , body =
+        [ Html.button [ Html.Events.onClick (Increment "chris") ] [ Html.text "Chris wears socks" ]
+        , Html.button [ Html.Events.onClick (Increment "drew") ] [ Html.text "Drew wears socks" ]
+        , case model.socks of
+            Just socks ->
+                Html.p [] <| [ Html.text <| "Drew and Chris have worn " ++ String.fromInt (Dict.values socks |> List.sum) ++ " pairs of socks" ]
 
-        Just socks ->
-            { title = ""
-            , body =
-                [ Html.button [ Html.Events.onClick (Increment "chris") ] [ Html.text "Chris wears socks" ]
-                , Html.button [ Html.Events.onClick (Increment "drew") ] [ Html.text "Drew wears socks" ]
-                , Html.p [] <| [ Html.text <| "Drew and Chris have worn " ++ String.fromInt (Dict.values socks |> List.sum) ++ " pairs of socks" ]
-                ]
-            }
+            Nothing ->
+                Html.text ""
+        ]
+    }
