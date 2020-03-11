@@ -3,6 +3,7 @@ module Types exposing (..)
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
 import Dict exposing (Dict)
+import Lamdera
 import Set exposing (Set)
 import Url exposing (Url)
 
@@ -18,7 +19,9 @@ type alias Socks =
 
 
 type alias BackendModel =
-    { socks : Socks, clients : Set Key }
+    { socks : Socks
+    , clients : Set Lamdera.ClientId
+    }
 
 
 type FrontendMsg

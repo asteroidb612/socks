@@ -3,6 +3,7 @@ module Backend exposing (..)
 import Dict exposing (Dict)
 import Html
 import Lamdera exposing (ClientId, SessionId)
+import Set
 import Types exposing (..)
 
 
@@ -21,7 +22,7 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( Dict.fromList []
+    ( { socks = Dict.fromList [], clients = Set.empty }
     , Cmd.none
     )
 
@@ -37,12 +38,17 @@ updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd
 updateFromFrontend sessionId clientId msg model =
     case msg of
         SayHello ->
-            ( { model | clients = Set.insert clientId model.clients }, Cmd.none )
+            ( { model | clients = Set.insert clientId model.clients }, Lamdera.sendToFrontend clientId (BroadcastSocks model.socks) )
 
         SaveSocks socks ->
             let
                 otherClients =
-                    -- "/=" means "!=" not sure why
-                    Set.filter (\x -> x /= clientId) numbers
+                    model.clients
+                        -- "/=" means "!=" not sure why
+                        |> Set.filter (\x -> x /= clientId)
+                        |> Set.toList
+
+                broadcastFromClientId id =
+                    Lamdera.sendToFrontend id (BroadcastSocks socks)
             in
-            ( socks, Lamdera.sendToFrontend (BroadcastSocks socks) )
+            ( model, List.map broadcastFromClientId otherClients |> Cmd.batch )

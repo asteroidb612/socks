@@ -28,7 +28,7 @@ app =
 
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
-    ( { key = key, socks = Dict.fromList [] }, Lamdera.sendToBackend SayHello )
+    ( { key = key, socks = Dict.fromList [ ( "drew", 0 ), ( "chris", 0 ) ] }, Lamdera.sendToBackend SayHello )
 
 
 update : FrontendMsg -> Model -> ( Model, Cmd FrontendMsg )
