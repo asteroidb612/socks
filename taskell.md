@@ -5,3 +5,4 @@
 
 ## Done
 
+- Count total socks
